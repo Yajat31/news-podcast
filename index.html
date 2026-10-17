@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sarvam Pod</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f1e9; --panel: #fffdf9; --ink: #1f1a14; --muted: #7a7166; --line: #e8dfd2;
+    --accent: #ea580c; --accent-2: #f59e0b; --a: #2563eb; --b: #db2777; --hl: #fff3e3; --shadow: 0 1px 2px rgba(60,40,10,.06), 0 8px 30px rgba(60,40,10,.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #12100e; --panel: #1c1916; --ink: #f4eee6; --muted: #a59b8f; --line: #2f2a25;
+      --accent: #fb7a2e; --accent-2: #fbbf24; --a: #60a5fa; --b: #f472b6; --hl: #2a2018; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 30px rgba(0,0,0,.35); }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 Inter, "Noto Sans", system-ui, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 28px 16px 64px; }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; flex-wrap: wrap; }
+  .logo { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; font-size: 20px; }
+  h1 { font: 800 1.7rem/1 Fraunces, Georgia, serif; margin: 0; letter-spacing: -0.02em; }
+  .tag { color: var(--muted); font-size: .9rem; }
+  .powered { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill { font-size: .72rem; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--panel); }
+  .pill b { color: var(--ink); font-weight: 600; }
+
+  .grid { display: grid; grid-template-columns: 400px 1fr; gap: 22px; align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); }
+  .label { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; }
+
+  .input-wrap { position: relative; }
+  textarea { width: 100%; min-height: 140px; resize: vertical; padding: 14px 14px 52px; border-radius: 14px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: 15px/1.5 Inter, "Noto Sans", sans-serif; outline: none; }
+  textarea:focus { border-color: var(--accent); }
+  .mic { position: absolute; left: 10px; bottom: 12px; display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 6px 12px 6px 8px;
+    font: 500 .85rem Inter, sans-serif; cursor: pointer; }
+  .mic .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; color: #fff; font-size: 12px; }
+  .mic.rec { border-color: #ef4444; color: #ef4444; }
+  .mic.rec .dot { background: #ef4444; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(239,68,68,.6)} 100%{box-shadow:0 0 0 10px rgba(239,68,68,0)} }
+  .hint { position: absolute; right: 12px; bottom: 16px; font-size: .75rem; color: var(--muted); }
+
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0 18px; }
+  .chip { font: .8rem Inter, sans-serif; padding: 5px 11px; border-radius: 999px; border: 1px dashed var(--line);
+    background: transparent; color: var(--muted); cursor: pointer; }
+  .chip:hover { color: var(--ink); border-color: var(--accent); }
+
+  .langs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 18px; }
+  .lang { border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 10px; padding: 7px 4px;
+    font: 500 .82rem "Noto Sans", Inter, sans-serif; cursor: pointer; text-align: center; line-height: 1.2; }
+  .lang small { display: block; color: var(--muted); font-size: .66rem; font-family: Inter, sans-serif; }
+  .lang.on { border-color: var(--accent); background: var(--hl); box-shadow: inset 0 0 0 1px var(--accent); }
+  .seg { display: flex; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; margin-bottom: 18px; }
+  .seg button { flex: 1; border: 0; background: transparent; color: var(--muted); padding: 7px; border-radius: 8px; font: 500 .85rem Inter, sans-serif; cursor: pointer; }
+  .seg button.on { background: var(--panel); color: var(--ink); box-shadow: var(--shadow); }
+  .go { width: 100%; border: 0; border-radius: 14px; padding: 14px; font: 600 1rem Inter, sans-serif; color: #fff; cursor: pointer;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 6px 20px rgba(234,88,12,.3); }
+  .go:disabled { opacity: .6; cursor: wait; }
+  .toast { margin-top: 12px; font-size: .85rem; color: var(--muted); min-height: 1.3em; }
+  .toast.err { color: #ef4444; }
+
+  .history { margin-top: 18px; }
+  .hist { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; cursor: pointer; }
+  .hist:hover { background: var(--bg); }
+  .hist .art { width: 36px; height: 36px; border-radius: 8px; flex: none; }
+  .hist .t { font-size: .85rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hist .m { font-size: .72rem; color: var(--muted); }
+
+  /* Stage */
+  .empty { text-align: center; padding: 70px 20px; color: var(--muted); }
+  .empty .big { font: 600 1.5rem Fraunces, Georgia, serif; color: var(--ink); margin: 14px 0 6px; }
+  .empty .duo { display: flex; justify-content: center; gap: 14px; }
+  .stage { display: none; }
+  .cover { position: relative; border-radius: 16px; padding: 22px; color: #fff; overflow: hidden; min-height: 210px;
+    display: flex; flex-direction: column; justify-content: space-between; }
+  .cover::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 85% 15%, rgba(255,255,255,.25), transparent 45%); pointer-events: none; }
+  .cover .kicker { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+  .cover h2 { font: 800 clamp(1.4rem, 3vw, 2rem)/1.15 Fraunces, "Noto Sans", Georgia, serif; margin: 6px 0 0; max-width: 90%; }
+  .hosts { display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }
+  .avatar { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font: 700 1.1rem Inter, sans-serif;
+    background: rgba(255,255,255,.18); border: 2px solid rgba(255,255,255,.5); transition: transform .15s, box-shadow .15s, opacity .2s; opacity: .7; }
+  .avatar.talk { opacity: 1; border-color: #fff; }
+  .avatar small { display: block; font-size: .6rem; font-weight: 500; opacity: .9; }
+  canvas#viz { flex: 1; height: 54px; min-width: 0; }
+
+  .controls { display: flex; align-items: center; gap: 10px; margin: 16px 0 10px; flex-wrap: wrap; }
+  .ctl { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; font-size: 14px; }
+  .ctl.main { width: 52px; height: 52px; background: var(--ink); color: var(--panel); border: 0; font-size: 18px; }
+  .dl { margin-left: auto; color: var(--accent); font-size: .85rem; font-weight: 500; text-decoration: none; }
+  .dl.off { opacity: .4; pointer-events: none; }
+  .segs { display: flex; gap: 3px; height: 6px; margin-bottom: 18px; }
+  .segs span { flex: 1; border-radius: 3px; background: var(--line); position: relative; overflow: hidden; }
+  .segs span.ready { background: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+  .segs span.done, .segs span.on { background: var(--accent); }
+
+  .transcript { display: flex; flex-direction: column; gap: 8px; max-height: 52vh; overflow-y: auto; padding-right: 4px; }
+  .line { display: flex; gap: 10px; max-width: 88%; cursor: pointer; }
+  .line.B { align-self: flex-end; flex-direction: row-reverse; text-align: right; }
+  .line .who { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: #fff; font: 700 .7rem Inter, sans-serif; margin-top: 2px; }
+  .line.A .who { background: var(--a); } .line.B .who { background: var(--b); }
+  .bubble { padding: 9px 13px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); font-family: "Noto Sans", Inter, sans-serif; transition: all .2s; }
+  .line.on .bubble { background: var(--hl); border-color: var(--accent); }
+  .line.pending .bubble { opacity: .55; }
+  .line.played .bubble { opacity: .8; }
+  .stage-status { font-size: .85rem; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--accent); animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .skeleton { height: 40px; border-radius: 14px; background: linear-gradient(90deg, var(--bg), var(--line), var(--bg)); background-size: 200% 100%; animation: shimmer 1.2s infinite; }
+  .skeleton:nth-child(even) { align-self: flex-end; width: 70%; } .skeleton:nth-child(odd) { width: 80%; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="logo">🎙</div>
+    <div>
+      <h1>Sarvam Pod</h1>
+      <div class="tag">Any topic, any link, any Indian language → a podcast in seconds</div>
+    </div>
+    <div class="powered">
+      <span class="pill"><b>Saaras</b> speech-to-text</span>
+      <span class="pill"><b>Sarvam-105B</b> script</span>
+      <span class="pill"><b>Bulbul</b> voices</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- Composer -->
+    <section class="panel">
+      <p class="label">What should the episode be about?</p>
+      <div class="input-wrap">
+        <textarea id="source" placeholder="Type a topic, paste an article or a news link… or tap the mic and just say it in your language."></textarea>
+        <button class="mic" id="mic"><span class="dot">●</span><span id="micLabel">Speak</span></button>
+        <span class="hint">⌘/Ctrl + Enter</span>
+      </div>
+      <div class="chips">
+        <button class="chip">How ISRO does space missions on a budget</button>
+        <button class="chip">Why does Mumbai flood every monsoon?</button>
+        <button class="chip">Explain LLMs to my grandmother</button>
+        <button class="chip">The story of UPI</button>
+      </div>
+
+      <p class="label">Language</p>
+      <div class="langs" id="langs"></div>
+
+      <p class="label">Length</p>
+      <div class="seg" id="len">
+        <button data-v="6">Quick</button><button data-v="10" class="on">Standard</button><button data-v="14">Deep dive</button>
+      </div>
+
+      <button class="go" id="go">Make episode</button>
+      <div class="toast" id="toast"></div>
+
+      <div class="history" id="historyWrap" hidden>
+        <p class="label">This session</p>
+        <div id="history"></div>
+      </div>
+    </section>
+
+    <!-- Stage -->
+    <section class="panel">
+      <div class="empty" id="empty">
+        <div class="duo"><div class="avatar" style="background:var(--a);color:#fff;opacity:1">A</div><div class="avatar" style="background:var(--b);color:#fff;opacity:1">R</div></div>
+        <div class="big">Meet Arjun &amp; Riya</div>
+        <div>He asks the questions, she explains with desi analogies.<br>Give them a topic and they'll go live in your language.</div>
+      </div>
+
+      <div class="stage" id="stage">
+        <div class="cover" id="cover">
+          <div>
+            <div class="kicker" id="kicker">Sarvam Pod</div>
+            <h2 id="title">…</h2>
+          </div>
+          <div class="hosts">
+            <div class="avatar" id="avA"><div>A<small>Arjun</small></div></div>
+            <canvas id="viz"></canvas>
+            <div class="avatar" id="avB"><div>R<small>Riya</small></div></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="ctl" id="prev" title="Previous">⏮</button>
+          <button class="ctl main" id="play" title="Play / pause">▶</button>
+          <button class="ctl" id="next" title="Next">⏭</button>
+          <a class="dl off" id="download" download="sarvam-pod.wav">⬇ Download episode</a>
+        </div>
+        <div class="segs" id="segs"></div>
+        <div class="stage-status" id="stageStatus"></div>
+        <div class="transcript" id="lines"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const LANGS = [
+  ["hinglish", "Hinglish", "Hindi + English"], ["hi-IN", "हिन्दी", "Hindi"], ["en-IN", "English", "Indian"],
+  ["ta-IN", "தமிழ்", "Tamil"], ["te-IN", "తెలుగు", "Telugu"], ["bn-IN", "বাংলা", "Bengali"], ["mr-IN", "मराठी", "Marathi"],
+  ["kn-IN", "ಕನ್ನಡ", "Kannada"], ["ml-IN", "മലയാളം", "Malayalam"], ["gu-IN", "ગુજરાતી", "Gujarati"], ["pa-IN", "ਪੰਜਾਬੀ", "Punjabi"],
+];
+let language = "hinglish", turns = 10;
+let ep = null, idx = -1, playing = false, waitingFor = -1;
+const history = [];
+const player = new Audio();
+
+// ---------- composer ----------
+LANGS.forEach(([v, native, en]) => {
+  const b = document.createElement("button");
+  b.className = "lang" + (v === language ? " on" : "");
+  b.dataset.v = v;
+  b.innerHTML = `${native}<small>${en}</small>`;
+  b.onclick = () => setLanguage(v);
+  $("langs").appendChild(b);
+});
+function setLanguage(v) {
+  language = v;
+  document.querySelectorAll(".lang").forEach((b) => b.classList.toggle("on", b.dataset.v === v));
+}
+document.querySelectorAll("#len button").forEach((b) => b.onclick = () => {
+  turns = +b.dataset.v;
+  document.querySelectorAll("#len button").forEach((x) => x.classList.toggle("on", x === b));
+});
+document.querySelectorAll(".chip").forEach((c) => c.onclick = () => { $("source").value = c.textContent; $("source").focus(); });
+$("source").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) $("go").click(); });
+function toast(msg, err) { $("toast").textContent = msg || ""; $("toast").className = "toast" + (err ? " err" : ""); }
+
+// ---------- mic → Saaras ----------
+let rec = null, chunks = [];
+$("mic").onclick = async () => {
+  if (rec && rec.state === "recording") { rec.stop(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    rec = new MediaRecorder(stream); chunks = [];
+    rec.ondataavailable = (e) => chunks.push(e.data);
+    rec.onstop = async () => {
+      stream.getTracks().forEach((t) => t.stop());
+      $("mic").classList.remove("rec"); $("micLabel").textContent = "Transcribing…";
+      const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" });
+      try {
+        const res = await fetch("/api/transcribe", { method: "POST", headers: { "Content-Type": blob.type }, body: blob });
+        const d = await res.json();
+        if (!res.ok) throw new Error(d.error);
+        $("source").value = d.transcript;
+        const match = LANGS.find(([v]) => v === d.language_code);
+        if (match) { setLanguage(match[0]); toast(`Heard you in ${match[2]} — episode will be in ${match[2]}.`); }
+        else toast("Got it.");
+      } catch (e) { toast("Couldn't transcribe: " + e.message, true); }
+      $("micLabel").textContent = "Speak";
+    };
+    rec.start();
+    $("mic").classList.add("rec"); $("micLabel").textContent = "Stop";
+    toast("Listening… say your topic in any Indian language.");
+  } catch (e) { toast("Mic unavailable: " + e.message, true); }
+};
+
+// ---------- generate (streaming) ----------
+$("go").onclick = async () => {
+  const source = $("source").value.trim();
+  if (!source) { $("source").focus(); toast("Give me a topic first.", true); return; }
+  stop();
+  $("go").disabled = true; toast("");
+  $("empty").style.display = "none"; $("stage").style.display = "block";
+  const langInfo = LANGS.find(([v]) => v === language);
+  ep = { title: "Writing…", lines: [], audio: [], full: null, language: langInfo[2] };
+  paintCover(ep);
+  $("lines").innerHTML = '<div class="skeleton"></div>'.repeat(5);
+  $("segs").innerHTML = ""; $("download").classList.add("off");
+  status("Warming up the studio…", true);
+
+  try {
+    const res = await fetch("/api/episode", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source, language, turns }) });
+    const reader = res.body.getReader(), dec = new TextDecoder();
+    let buf = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let nl;
+      while ((nl = buf.indexOf("\n")) >= 0) { handle(JSON.parse(buf.slice(0, nl))); buf = buf.slice(nl + 1); }
+    }
+  } catch (e) { fail(e.message); }
+  $("go").disabled = false;
+};
+
+function handle(ev) {
+  if (ev.type === "status") status(ev.text, true);
+  else if (ev.type === "error") fail(ev.error);
+  else if (ev.type === "script") {
+    ep.title = ev.title; ep.lines = ev.lines; ep.audio = new Array(ev.lines.length).fill(null);
+    paintCover(ep); renderLines();
+    status("Recording in the studio… playback starts with the first line.", true);
+    playFrom(0);
+  } else if (ev.type === "audio") {
+    ep.audio[ev.i] = ev.audio;
+    lineEl(ev.i)?.classList.remove("pending");
+    $("segs").children[ev.i]?.classList.add("ready");
+    if (waitingFor === ev.i) startClip(ev.i);
+  } else if (ev.type === "done") {
+    ep.full = ev.full;
+    $("download").href = "data:audio/wav;base64," + ev.full;
+    $("download").download = slug(ep.title) + ".wav";
+    $("download").classList.remove("off");
+    status("");
+    addHistory(ep);
+  }
+}
+function fail(msg) {
+  status(""); toast("Something went wrong: " + msg, true);
+  if (!ep.lines.length) { $("stage").style.display = "none"; $("empty").style.display = "block"; }
+}
+function status(text, spin) { $("stageStatus").innerHTML = text ? (spin ? '<span class="spinner"></span>' : "") + text : ""; }
+
+// ---------- stage ----------
+function hashHue(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 360; }
+function art(title) { const h = hashHue(title); return `linear-gradient(135deg, hsl(${h} 75% 42%), hsl(${(h + 50) % 360} 80% 52%))`; }
+function paintCover(e) { $("cover").style.background = art(e.title); $("title").textContent = e.title; $("kicker").textContent = `Sarvam Pod · ${e.language}`; }
+function slug(s) { return s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "") || "sarvam-pod"; }
+function lineEl(i) { return $("lines").children[i]; }
+
+function renderLines() {
+  $("lines").innerHTML = ""; $("segs").innerHTML = "";
+  ep.lines.forEach((l, i) => {
+    const row = document.createElement("div");
+    row.className = `line ${l.speaker}` + (ep.audio[i] ? "" : " pending");
+    row.innerHTML = `<div class="who">${l.host[0]}</div><div class="bubble"></div>`;
+    row.querySelector(".bubble").textContent = l.text;
+    row.onclick = () => playFrom(i);
+    $("lines").appendChild(row);
+    const seg = document.createElement("span");
+    if (ep.audio[i]) seg.className = "ready";
+    $("segs").appendChild(seg);
+  });
+}
+
+function mark(i) {
+  [...$("lines").children].forEach((el, j) => { el.classList.toggle("on", j === i); el.classList.toggle("played", j < i); });
+  [...$("segs").children].forEach((el, j) => { el.classList.toggle("on", j === i); el.classList.toggle("done", j < i); });
+  const speaker = ep.lines[i]?.speaker;
+  $("avA").classList.toggle("talk", speaker === "A"); $("avB").classList.toggle("talk", speaker === "B");
+  lineEl(i)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+function playFrom(i) {
+  if (!ep || !ep.lines.length) return;
+  if (i < 0) i = 0;
+  if (i >= ep.lines.length) { stop(); mark(ep.lines.length); return; }
+  idx = i; playing = true; $("play").textContent = "❚❚"; mark(i);
+  if (ep.audio[i]) startClip(i); else { waitingFor = i; player.pause(); }
+}
+function startClip(i) {
+  waitingFor = -1; ensureViz();
+  player.src = "data:audio/wav;base64," + ep.audio[i];
+  player.play().catch(() => { playing = false; $("play").textContent = "▶"; });
+}
+function stop() { player.pause(); playing = false; idx = -1; waitingFor = -1; $("play").textContent = "▶"; if (ep) mark(-1); }
+player.onended = () => { if (playing) playFrom(idx + 1); };
+$("play").onclick = () => {
+  if (!ep || !ep.lines.length) return;
+  if (playing) { player.pause(); playing = false; waitingFor = -1; $("play").textContent = "▶"; }
+  else if (idx >= 0 && player.src && ep.audio[idx]) { player.play(); playing = true; $("play").textContent = "❚❚"; }
+  else playFrom(Math.max(idx, 0));
+};
+$("prev").onclick = () => playFrom(idx - 1);
+$("next").onclick = () => playFrom(idx + 1);
+document.addEventListener("keydown", (e) => { if (e.code === "Space" && e.target.tagName !== "TEXTAREA") { e.preventDefault(); $("play").click(); } });
+
+// ---------- visualizer ----------
+let analyser = null;
+function ensureViz() {
+  if (analyser) return;
+  const ctx = new AudioContext();
+  analyser = ctx.createAnalyser(); analyser.fftSize = 128;
+  ctx.createMediaElementSource(player).connect(analyser); analyser.connect(ctx.destination);
+  const cv = $("viz"), g = cv.getContext("2d"), data = new Uint8Array(analyser.frequencyBinCount);
+  (function draw() {
+    requestAnimationFrame(draw);
+    const w = cv.width = cv.clientWidth * devicePixelRatio, h = cv.height = cv.clientHeight * devicePixelRatio;
+    analyser.getByteFrequencyData(data);
+    const n = 40, bw = w / n; let level = 0;
+    g.clearRect(0, 0, w, h); g.fillStyle = "rgba(255,255,255,.9)";
+    for (let k = 0; k < n; k++) {
+      const v = data[Math.floor(k * data.length / n / 1.4)] / 255; level += v;
+      const bh = Math.max(2 * devicePixelRatio, v * h * .9);
+      g.beginPath(); g.roundRect(k * bw + bw * .25, (h - bh) / 2, bw * .5, bh, bw * .25); g.fill();
+    }
+    level /= n;
+    const speaker = ep?.lines[idx]?.speaker, s = 1 + level * .35, glow = `0 0 0 ${level * 18}px rgba(255,255,255,.25)`;
+    $("avA").style.transform = speaker === "A" ? `scale(${s})` : ""; $("avA").style.boxShadow = speaker === "A" ? glow : "";
+    $("avB").style.transform = speaker === "B" ? `scale(${s})` : ""; $("avB").style.boxShadow = speaker === "B" ? glow : "";
+  })();
+}
+
+// ---------- history ----------
+function addHistory(e) {
+  history.unshift({ ...e });
+  $("historyWrap").hidden = false; $("history").innerHTML = "";
+  history.forEach((h) => {
+    const row = document.createElement("div");
+    row.className = "hist";
+    row.innerHTML = `<div class="art" style="background:${art(h.title)}"></div><div style="min-width:0"><div class="t"></div><div class="m">${h.language} · ${h.lines.length} lines</div></div>`;
+    row.querySelector(".t").textContent = h.title;
+    row.onclick = () => {
+      stop(); ep = { ...h };
+      $("empty").style.display = "none"; $("stage").style.display = "block";
+      paintCover(ep); renderLines(); status("");
+      $("download").href = "data:audio/wav;base64," + ep.full; $("download").download = slug(ep.title) + ".wav"; $("download").classList.remove("off");
+      playFrom(0);
+    };
+    $("history").appendChild(row);
+  });
+}
+</script>
+</body>
+</html>
